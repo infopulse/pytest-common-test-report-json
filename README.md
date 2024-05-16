@@ -20,7 +20,7 @@ pytest --ctrf
 generate report file in the specified directory
 
 ```bash
-pytest --ctrf=results/test-report.json
+pytest --ctrf results/test-report.json
 ```
 
 ## Json exampe

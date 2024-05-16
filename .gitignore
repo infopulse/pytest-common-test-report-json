@@ -8,3 +8,5 @@ dist
 .venv*
 pytest.ini
 .env
+
+conftest.py
