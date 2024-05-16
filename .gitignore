@@ -1,0 +1,10 @@
+.pytest_cache
+*/**__pycache__
+.idea
+# file for test and debug
+build
+pytest*.egg-info
+dist
+.venv*
+pytest.ini
+.env
