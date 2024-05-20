@@ -2,12 +2,14 @@
 
 Pytest implementation of Common Test Report Format (CTRF) for test results.  
 Test report will be generated in JSON format.  
-Test report can be used to prettify the report in GitHub Actions with [github-actions-ctrf](https://github.com/ctrf-io/github-actions-ctrf)
+Test report can be used to prettify the report in GitHub Actions with [github-actions-ctrf](https://github.com/ctrf-io/github-actions-ctrf).  
+Do not worry if report in GitHub does not appear immediately. It takes some time to process the report. 
 
 ## Features
 - Generates JSON report
 - Tested to work correctly with and without [pytest-xdist](https://pypi.org/project/pytest-xdist/)
 - Tested to get browser name from [pytest-playwright](https://pypi.org/project/pytest-playwright/)
+- Parametrized tests are supported and reported as 1 test with multiple retries
 
 ## Installation
 
