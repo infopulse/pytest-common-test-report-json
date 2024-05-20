@@ -17,6 +17,10 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install xdist
+        run: |
+          pip install pytest-xdist
+
       - name: Install plugin
         run: |
           pip install .

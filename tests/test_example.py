@@ -47,10 +47,6 @@ def test_do_calculations_8_post_error(post_fail):
     assert 8 + 8 == 16
 
 
-def test_page(page):
-    pass
-
-
 @mark.parametrize('param', [1, 2, 3, 4, 5])
 def test_parametrized(param):
     assert param < 10
