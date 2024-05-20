@@ -1,26 +1,26 @@
 # CTRF for pytest
 
 Pytest implementation of Common Test Report Format (CTRF) for test results.  
-Test report will be generated in JSON format.
+Test report will be generated in JSON format.  
+Test report can be used to prettify the report in GitHub Actions with [github-actions-ctrf](https://github.com/ctrf-io/github-actions-ctrf)
+
+## Features
+- Generates JSON report
+- Tested to work correctly with and without [pytest-xdist](https://pypi.org/project/pytest-xdist/)
+- Tested to get browser name from [pytest-playwright](https://pypi.org/project/pytest-playwright/)
 
 ## Installation
 
 ```bash
-pip install ctrf-pytest
+pip install pytest-json-ctrf
 ```
 
 ## Usage
 
-generate report.json file in the root directory of the project
+generate report.json file in the root directory of the project. File path is mandatory
 
 ```bash
-pytest --ctrf
-```
-
-generate report file in the specified directory
-
-```bash
-pytest --ctrf results/test-report.json
+pytest --ctrf report.json
 ```
 
 ## Json exampe
@@ -64,9 +64,13 @@ More info here: https://ctrf.io/docs/schema/examples
 }
 ```
 
+## Report Example
+![Example Image](./assets/report_example.png)
+
 ## Credits
 
-- https://ctrf.io/
-- https://github.com/numirias/pytest-json-report
-- https://github.com/testomatio/pytestomatio
+- https://ctrf.io/ -> nice data format
+- https://github.com/numirias/pytest-json-report -> Source of inspiration and dealing with xdist sync
+- https://github.com/testomatio/pytestomatio -> Source of inspiration for creating pytest plugins
+- https://github.com/infopulse/Playwright-course-python -> The report will be used in the demo project as +1 report option
 
