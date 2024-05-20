@@ -30,6 +30,7 @@ jobs:
           python -m pytest --ctrf $REPORT -m 'not smoke' -n auto
         env:
           REPORT: 'test-results/report.json'
+        continue-on-error: true
 
       - name: Generate Pretty Report
         run: |
