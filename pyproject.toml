@@ -7,7 +7,7 @@ exclude = [".github", "tests", "build", "dist", ".venv", "pytestomatio.egg-info"
 
 [project]
 name = "pytest-json-ctrf"
-version = "0.1.1"
+version = "0.1.2"
 
 dependencies = [
     "pytest>6.0.0",
@@ -28,7 +28,7 @@ classifiers = [
 
 [project.urls]
 "Infopulse" = "https://infopulse.com/"
-"Homepage" = "https://infopulse.com/pytest-json-ctrf"
+"Homepage" = "https://github.com/infopulse/pytest-common-test-report-json"
 
 [tool.pytest.ini_options]
 markers = [
