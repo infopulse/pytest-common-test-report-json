@@ -5,15 +5,18 @@ from pytest import mark, fixture
 def pre_fail():
     raise Exception("This is a test exception")
 
+
 @fixture
 def post_fail():
     yield
     raise Exception("This is a test exception")
 
+
 def test_do_calculations_1_pass():
     assert 2 + 2 == 4
 
 
+@mark.regression
 def test_do_calculations_2_pass():
     assert 3 + 3 == 6
 
@@ -42,3 +45,12 @@ def test_do_calculations_7_pre_error(pre_fail):
 
 def test_do_calculations_8_post_error(post_fail):
     assert 8 + 8 == 16
+
+
+def test_page(page):
+    pass
+
+
+@mark.parametrize('param', [1, 2, 3, 4, 5])
+def test_parametrized(param):
+    assert param < 10

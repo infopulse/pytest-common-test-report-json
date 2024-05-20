@@ -3,116 +3,76 @@ import pytest
 import time
 import json
 from pytest import Item, CallInfo, TestReport, Mark
-from enum import Enum
 from collections import OrderedDict
-
-
-class TestStatus(Enum):
-    PASSED = "passed"
-    FAILED = "failed"
-    SKIPPED = "skipped"
-    PENDING = "pending"
-    OTHER = "other"
+from .TestObject import TestObject, TestStatus
 
 
 class Report:
-    def __init__(self, report_file: str):
+    def __init__(self):
         self.test_items = OrderedDict()
+        self.prepared_tests = dict()
         self.start_time = None
         self.stop_time = None
-        self.report_file = report_file
 
-    def start(self):
+    def start(self) -> None:
         self.start_time = time.time()
 
-    def stop(self):
+    def stop(self) -> None:
         self.stop_time = time.time()
 
     @staticmethod
-    def _get_tool():
+    def _get_tool() -> dict:
         return {
             "name": "pytest",
             "version": str(pytest.__version__)
         }
 
-    def _get_summary(self):
+    def _get_summary(self) -> dict:
         return {
-            'tests': len(self.test_items),
-            'passed': len([test for test in self.test_items.values() if test['status'] == TestStatus.PASSED]),
-            'failed': len([test for test in self.test_items.values() if test['status'] == TestStatus.FAILED]),
-            'skipped': len([test for test in self.test_items.values() if test['status'] == TestStatus.SKIPPED]),
-            'pending': len([test for test in self.test_items.values() if test['status'] == TestStatus.PENDING]),
+            'tests': len(self.prepared_tests),
+            'passed': len([test for test in self.prepared_tests.values() if test.status == TestStatus.PASSED]),
+            'failed': len([test for test in self.prepared_tests.values() if test.status == TestStatus.FAILED]),
+            'skipped': len([test for test in self.prepared_tests.values() if test.status == TestStatus.SKIPPED]),
+            'pending': len([test for test in self.prepared_tests.values() if test.status == TestStatus.PENDING]),
             'other': 0,
             'start': self.start_time,
             'stop': self.stop_time
         }
 
-    @staticmethod
-    def _get_test_status(report: TestReport) -> TestStatus:
-        if report.skipped:
-            return TestStatus.SKIPPED
-        elif report.failed:
-            return TestStatus.FAILED
-        elif report.passed:
-            return TestStatus.PASSED
+    def collect(self, report: TestReport) -> None:
+        if report.nodeid not in self.test_items.keys():
+            test = TestObject()
         else:
-            return TestStatus.OTHER
+            test = self.test_items.get(report.nodeid)
+        test.update(report, getattr(report, 'worker_id', None))
+        self.test_items[report.nodeid] = test
 
-    def _add(self, nodeid: str, test_report: TestReport):
-        worker = None
-        if hasattr(test_report, 'worker_id'):
-            worker = test_report.worker_id
-        if nodeid not in self.test_items.keys():
-            self.test_items[nodeid] = {
-                "name": test_report.head_line,
-                "status": self._get_test_status(test_report),
-                "duration": 0,
-                'extra': {'worker': worker if worker else 'controller'}
-            }
+    def process_retries(self) -> None:
+        for test_id, test_data in self.test_items.items():
+            name = test_id.split('[')[0]
+            test = self.prepared_tests.get(name)
+            if test:
+                test.retries += 1
+            else:
+                self.prepared_tests[name] = test_data
 
-    def _list_tests(self):
-        for test in self.test_items.values():
-            test['status'] = test['status'].value
-            yield test
-
-    def collect(self, report: TestReport):
-        nodeid = report.nodeid
-        if nodeid not in self.test_items.keys():
-            self._add(nodeid, report)
-        else:
-            test_details = self.test_items.get(nodeid)
-            if test_details["status"] not in (TestStatus.SKIPPED, TestStatus.FAILED):
-                test_details["status"] = self._get_test_status(report)
-                if test_details["status"] == TestStatus.FAILED:
-                    test_details['rawStatus'] = f"{report.when}_{report.outcome}"
-
-            test_details["duration"] += report.duration
-            if report.when == "call":
-                test_details["start"] = report.start
-            if report.when == "teardown":
-                test_details["stop"] = report.stop
-            # metadata
-            test_details["filePath"] = report.location[0]
-            # extra
-            if report.longrepr and len(report.longreprtext) > 0:
-                test_details["extra"]["stackTrace"] = report.longreprtext
-
-    def get_report(self):
+    def get_report(self) -> dict:
+        self.process_retries()
         return {'results':
             {
                 "tool": self._get_tool(),
                 "summary": self._get_summary(),
-                "tests": list(self._list_tests())
+                "tests": [test.serialize() for test in self.prepared_tests.values()]
             }
         }
 
-    def save(self):
-        dirname = os.path.dirname(self.report_file)
+    def save(self, report_file: str) -> None:
+        dirname = os.path.dirname(report_file)
         if dirname:
             try:
                 os.makedirs(dirname)
             except Exception as e:
                 print(e)
                 raise Exception(f"Can't create directory {dirname}")
-        with open(self.report_file, 'w') as file:
+        with open(report_file, 'w') as file:
             json.dump(self.get_report(), file, default=str, indent=4)
