@@ -6,8 +6,8 @@ build-backend = "setuptools.build_meta"
 exclude = [".github", "tests", "build", "dist", ".venv", "pytestomatio.egg-info", ".env", ".gitignore", "CHANGELOG.md"]
 
 [project]
-name = "pytest-ctrf"
-version = "0.0.1"
+name = "pytest-json-ctrf"
+version = "0.0.4"
 
 dependencies = [
     "pytest>6.0.0",
@@ -28,7 +28,7 @@ classifiers = [
 
 [project.urls]
 "Infopulse" = "https://infopulse.com/"
-"Homepage" = "https://infopulse.com/pytest-ctrf"
+"Homepage" = "https://infopulse.com/pytest-json-ctrf"
 
 [project.entry-points.pytest11]
 pytestomatio = "plugin.main"
