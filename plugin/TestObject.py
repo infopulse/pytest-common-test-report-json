@@ -45,7 +45,8 @@ class TestObject:
             self.status = TestStatus.OTHER
 
     def update(self, report: TestReport, worker_id: str = None) -> None:
-        self.name = report.head_line.split('[')[0]
+        self.name = report.nodeid.split('[')[0]
+        # self.name = report.head_line.split('[')[0]
         self.set_status(report)
         self.duration += report.duration
         if report.when == "setup" and not self.start:

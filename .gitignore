@@ -9,4 +9,5 @@ dist
 pytest.ini
 .env
 
+report.json
 conftest.py
