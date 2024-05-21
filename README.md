@@ -69,6 +69,12 @@ More info here: https://ctrf.io/docs/schema/examples
 ## Report Example
 ![Example Image](./assets/report_example.png)
 
+## Technical details
+For future me and others who are interested in the technical details of the implementation.  
+The main idea is to handle xdist plugin because without it collecting report is quite straightforward.  
+By the example of putest-json-report plugin, I have learned that different plugins can be registered for the controller and workers node.  
+The `pytest_runtest_logreport` hook in the controller node is used to collect the test results from all the nodes so other nodes can just add some details to the `TestReport` object.
+
 ## Credits
 
 - https://ctrf.io/ -> nice data format
