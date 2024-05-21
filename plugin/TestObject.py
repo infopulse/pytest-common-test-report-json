@@ -1,7 +1,6 @@
 from enum import Enum
 from pytest import TestReport
 
-
 class TestStatus(Enum):
     PASSED = "passed"
     FAILED = "failed"
@@ -18,6 +17,7 @@ class TestObject:
     start: float = None
     stop: float = None
     retries: int = 0
+    message: str = ''
 
     worker_id: str = None
     file_path: str = None
@@ -33,6 +33,12 @@ class TestObject:
         elif report.failed:
             self.status = TestStatus.FAILED
             self.raw_status = f"{report.when}_{report.outcome}"
+            self.message = f"The test failed in the {report.when} phase"
+            if hasattr(report, 'longreprtext'):
+                if "AssertionError" in report.longreprtext:
+                    self.message += " due to an assertion error"
+                elif "Exception" in report.longreprtext:
+                    self.message += " due to an exception"
         elif report.passed:
             self.status = TestStatus.PASSED
         else:
@@ -66,7 +72,8 @@ class TestObject:
             'file_path': self.file_path,
             'tags': self.tags,
             'browser': self.browser,
-            'trace': self.trace
+            'trace': self.trace,
+            'message': self.message
         }
         if self.worker_id:
             result['extra'] = {'worker': self.worker_id}

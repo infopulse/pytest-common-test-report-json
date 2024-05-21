@@ -7,7 +7,7 @@ exclude = [".github", "tests", "build", "dist", ".venv", "pytestomatio.egg-info"
 
 [project]
 name = "pytest-json-ctrf"
-version = "0.1.2"
+version = "0.2.0"
 
 dependencies = [
     "pytest>6.0.0",
