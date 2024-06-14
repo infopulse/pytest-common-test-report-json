@@ -4,9 +4,10 @@ from plugin.BaseMetadataReport import BaseMetadataReport
 
 
 def pytest_addoption(parser: Parser):
-    parser.addoption('--ctrf',
-                     action='store',
-                     help='generate test report. Report file name is optional')
+    group = parser.getgroup('ctrf', 'generate test report in CTR format')
+    group.addoption('--ctrf',
+                    action='store',
+                    help='generate test report. Report file name is optional')
 
 
 def pytest_configure(config: Config):

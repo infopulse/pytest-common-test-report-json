@@ -44,7 +44,11 @@ class Report:
             test = TestObject()
         else:
             test = self.test_items.get(report.nodeid)
-        test.update(report, getattr(report, 'worker_id', None))
+        worker_id = getattr(report, 'worker_id', None)
+        if worker_id:
+            test.update(report, str(worker_id))
+        else:
+            test.update(report, None)
         self.test_items[report.nodeid] = test
 
     def process_retries(self) -> None:

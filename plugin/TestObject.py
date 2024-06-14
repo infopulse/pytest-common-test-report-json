@@ -1,5 +1,8 @@
 from enum import Enum
+from typing import Any
+
 from pytest import TestReport
+
 
 class TestStatus(Enum):
     PASSED = "passed"
@@ -10,20 +13,20 @@ class TestStatus(Enum):
 
 
 class TestObject:
-    name: str = None
+    name: str
     status: TestStatus = TestStatus.PENDING
-    raw_status: str = None
+    raw_status: str
     duration: float = 0
-    start: float = None
-    stop: float = None
+    start: float
+    stop: float
     retries: int = 0
     message: str = ''
 
-    worker_id: str = None
-    file_path: str = None
-    tags: list[str] = None
-    browser: str = None
-    trace: str = None
+    worker_id: str
+    file_path: str
+    tags: list[str]
+    browser: str
+    trace: str
 
     def set_status(self, report: TestReport) -> None:
         if self.status in (TestStatus.SKIPPED, TestStatus.FAILED):
@@ -44,7 +47,7 @@ class TestObject:
         else:
             self.status = TestStatus.OTHER
 
-    def update(self, report: TestReport, worker_id: str = None) -> None:
+    def update(self, report: TestReport, worker_id: str) -> None:
         self.name = report.nodeid.split('[')[0]
         # self.name = report.head_line.split('[')[0]
         self.set_status(report)
@@ -62,7 +65,7 @@ class TestObject:
         self.worker_id = worker_id
 
     def serialize(self) -> dict:
-        result = {
+        result: dict[str, Any] = {
             'name': self.name,
             'status': self.status.value,
             'raw_status': self.raw_status,
