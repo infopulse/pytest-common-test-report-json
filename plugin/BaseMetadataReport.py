@@ -1,6 +1,5 @@
-from pytest import Config, hookimpl, Item, CallInfo, CollectReport, Function, TestReport, fixture, FixtureRequest
+from pytest import Config, hookimpl, Item
 from .Report import Report
-from collections import OrderedDict
 
 metadata = '_ctrf_metadata'
 

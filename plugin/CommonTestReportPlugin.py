@@ -1,5 +1,4 @@
-from pytest import Config, hookimpl, Item, CallInfo, CollectReport, Function, TestReport, fixture, FixtureRequest
-from .Report import Report
+from pytest import hookimpl, TestReport
 from collections import OrderedDict
 from .BaseMetadataReport import metadata, BaseMetadataReport
 

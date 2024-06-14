@@ -1,4 +1,4 @@
-from pytest import Config, Parser, FixtureRequest, fixture, Function
+from pytest import Config, Parser, FixtureRequest, fixture
 from plugin.CommonTestReportPlugin import CTRF
 from plugin.BaseMetadataReport import BaseMetadataReport
 

@@ -2,7 +2,7 @@ import os
 import pytest
 import time
 import json
-from pytest import Item, CallInfo, TestReport, Mark
+from pytest import TestReport
 from collections import OrderedDict
 from .TestObject import TestObject, TestStatus
 
@@ -27,13 +27,16 @@ class Report:
             "version": str(pytest.__version__)
         }
 
+    def list_tests_by_status(self, status: TestStatus) -> list:
+        return [test for test in self.prepared_tests.values() if test.status == status]
+
     def _get_summary(self) -> dict:
         return {
             'tests': len(self.prepared_tests),
-            'passed': len([test for test in self.prepared_tests.values() if test.status == TestStatus.PASSED]),
-            'failed': len([test for test in self.prepared_tests.values() if test.status == TestStatus.FAILED]),
-            'skipped': len([test for test in self.prepared_tests.values() if test.status == TestStatus.SKIPPED]),
-            'pending': len([test for test in self.prepared_tests.values() if test.status == TestStatus.PENDING]),
+            'passed': len(self.list_tests_by_status(TestStatus.PASSED)),
+            'failed': len(self.list_tests_by_status(TestStatus.FAILED)),
+            'skipped': len(self.list_tests_by_status(TestStatus.SKIPPED)),
+            'pending': len(self.list_tests_by_status(TestStatus.PENDING)),
             'other': 0,
             'start': self.start_time,
             'stop': self.stop_time
@@ -62,12 +65,11 @@ class Report:
 
     def get_report(self) -> dict:
         self.process_retries()
-        return {'results':
-            {
-                "tool": self._get_tool(),
-                "summary": self._get_summary(),
-                "tests": [test.serialize() for test in self.prepared_tests.values()]
-            }
+        return {'results': {
+            "tool": self._get_tool(),
+            "summary": self._get_summary(),
+            "tests": [test.serialize() for test in self.prepared_tests.values()]
+        }
         }
 
     def save(self, report_file: str) -> None:
