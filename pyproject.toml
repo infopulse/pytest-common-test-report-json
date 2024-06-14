@@ -7,7 +7,7 @@ exclude = [".github", "tests", "build", "dist", ".venv", "pytestomatio.egg-info"
 
 [project]
 name = "pytest-json-ctrf"
-version = "0.2.3"
+version = "0.2.4"
 
 dependencies = [
     "pytest>6.0.0",
@@ -37,4 +37,4 @@ markers = [
 ]
 
 [project.entry-points.pytest11]
-pytestomatio = "plugin.main"
+ctrf = "plugin.main"
