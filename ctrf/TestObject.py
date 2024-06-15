@@ -14,13 +14,13 @@ class TestStatus(Enum):
 
 class TestObject:
     name: str
-    status: TestStatus = TestStatus.PENDING
+    status: TestStatus
     raw_status: str
     duration: float = 0
     start: float
     stop: float
-    retries: int = 0
-    message: str = ''
+    retries: int
+    message: str
 
     worker_id: str
     file_path: str
@@ -28,9 +28,26 @@ class TestObject:
     browser: str
     trace: str
 
-    def set_status(self, report: TestReport) -> None:
+    def __init__(self, report: TestReport, worker_id: str or None = None):
+        self.name = report.nodeid.split('[')[0]
+        self.status = TestStatus.PENDING
+        self.status = self.set_status(report)
+        self.raw_status = None
+        self.duration = 0
+        self.start = 0
+        self.stop = 0
+        self.retries = 0
+        self.message = None
+
+        self.worker_id = worker_id
+        self.file_path = report.location[0]
+        self.tags = []
+        self.browser = None
+        self.trace = None
+
+    def set_status(self, report: TestReport) -> TestStatus:
         if self.status in (TestStatus.SKIPPED, TestStatus.FAILED):
-            return
+            return self.status
         elif report.skipped:
             self.status = TestStatus.SKIPPED
         elif report.failed:
@@ -46,23 +63,20 @@ class TestObject:
             self.status = TestStatus.PASSED
         else:
             self.status = TestStatus.OTHER
+        return self.status
 
-    def update(self, report: TestReport, worker_id: str) -> None:
-        self.name = report.nodeid.split('[')[0]
-        # self.name = report.head_line.split('[')[0]
+    def update(self, report: TestReport) -> None:
         self.set_status(report)
         self.duration += report.duration
-        if report.when == "setup" and not self.start:
+        if report.when == "setup" and self.start == 0:
             self.start = report.start
-        if report.when == "teardown" and not self.stop:
+        if report.when == "teardown" and self.stop == 0:
             self.stop = report.stop
-        self.file_path = report.location[0]
         if report.longrepr and len(report.longreprtext) > 0:
             self.trace = report.longreprtext
         if hasattr(report, '_ctrf_metadata'):
             self.tags = report._ctrf_metadata.get('tags')
             self.browser = report._ctrf_metadata.get('browser')
-        self.worker_id = worker_id
 
     def serialize(self) -> dict:
         result: dict[str, Any] = {

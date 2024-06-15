@@ -25,9 +25,20 @@ jobs:
           pip install build
       - name: Lint with flake8
         run: |
-          flake8 plugin --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          flake8 ctrf --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Install plugin and run tests
+        run: |
+          pip install .
+          python -m pytest --ctrf $REPORT tests/test_plugin.py
+        env:
+            REPORT: 'test-results/report.json'
       - name: Build package
         run: |
           python -m build
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Generate Pretty Report
+        if: always()
+        run: |
+          npx github-actions-ctrf test-results/report.json

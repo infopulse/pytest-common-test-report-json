@@ -44,14 +44,11 @@ class Report:
 
     def collect(self, report: TestReport) -> None:
         if report.nodeid not in self.test_items.keys():
-            test = TestObject()
+            worker_id = getattr(report, 'worker_id', None)
+            test = TestObject(report, worker_id)
         else:
-            test = self.test_items.get(report.nodeid)
-        worker_id = getattr(report, 'worker_id', None)
-        if worker_id:
-            test.update(report, str(worker_id))
-        else:
-            test.update(report, None)
+            test = self.test_items.get(report.nodeid)  # type: ignore
+        test.update(report)
         self.test_items[report.nodeid] = test
 
     def process_retries(self) -> None:

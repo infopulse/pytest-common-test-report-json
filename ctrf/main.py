@@ -1,6 +1,6 @@
 from pytest import Config, Parser, FixtureRequest, fixture
-from plugin.CommonTestReportPlugin import CTRF
-from plugin.BaseMetadataReport import BaseMetadataReport
+from ctrf.CommonTestReportPlugin import CTRF
+from ctrf.BaseMetadataReport import BaseMetadataReport
 
 
 def pytest_addoption(parser: Parser):
@@ -18,15 +18,16 @@ def pytest_configure(config: Config):
     else:
         plugin = CTRF()
     setattr(config, '_ctrf', plugin)
-    config.pluginmanager.register(plugin, name='ctrf')
+    config.pluginmanager.register(plugin, name='ctrf_plugin')
+    pass
 
 
 def pytest_unconfigure(config: Config):
     ctrf = getattr(config, '_ctrf', None)
     if ctrf is not None:
         delattr(config, '_ctrf')
-    if config.pluginmanager.hasplugin('ctrf'):
-        config.pluginmanager.unregister(name='ctrf')
+    if config.pluginmanager.hasplugin('ctrf_plugin'):
+        config.pluginmanager.unregister(name='ctrf_plugin')
 
 
 @fixture(autouse=True)

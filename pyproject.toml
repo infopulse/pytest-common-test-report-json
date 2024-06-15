@@ -3,11 +3,14 @@ requires = ["setuptools>=65.5.1", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-exclude = [".github", "tests", "build", "dist", ".venv", "pytestomatio.egg-info", ".env", ".gitignore", "CHANGELOG.md", "assets"]
+exclude = [
+    ".github", "tests", "build", "dist", ".venv",
+    "pytest_json_ctrf.egg-info", ".env", ".gitignore",
+    "CHANGELOG.md", "assets", "test-results"]
 
 [project]
 name = "pytest-json-ctrf"
-version = "0.2.4"
+version = "0.3.0"
 
 dependencies = [
     "pytest>6.0.0",
@@ -37,4 +40,4 @@ markers = [
 ]
 
 [project.entry-points.pytest11]
-ctrf = "plugin.main"
+ctrf = "ctrf.main"
