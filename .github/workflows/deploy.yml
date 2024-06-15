@@ -28,6 +28,7 @@ jobs:
           flake8 ctrf --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Install plugin and run tests
         run: |
+          pip install pytest-xdist
           pip install .
           python -m pytest --ctrf $REPORT tests/test_plugin.py
         env:
