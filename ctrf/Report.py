@@ -73,7 +73,7 @@ class Report:
         dirname = os.path.dirname(report_file)
         if dirname:
             try:
-                os.makedirs(dirname)
+                os.makedirs(dirname, exist_ok=True)
             except Exception as e:
                 print(e)
                 raise Exception(f"Can't create directory {dirname}")
