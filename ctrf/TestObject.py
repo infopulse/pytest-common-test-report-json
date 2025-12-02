@@ -67,7 +67,7 @@ class TestObject:
 
     def update(self, report: TestReport) -> None:
         self.set_status(report)
-        self.duration += report.duration
+        self.duration += 1000 * report.duration  # pytest reports duration in seconds, CTRF requires milliseconds
         if report.when == "setup" and self.start == 0:
             self.start = report.start
         if report.when == "teardown" and self.stop == 0:
