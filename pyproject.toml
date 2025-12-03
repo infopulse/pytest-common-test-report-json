@@ -10,7 +10,7 @@ exclude = [
 
 [project]
 name = "pytest-json-ctrf"
-version = "0.3.2"
+version = "0.3.3"
 
 dependencies = [
     "pytest>6.0.0",
